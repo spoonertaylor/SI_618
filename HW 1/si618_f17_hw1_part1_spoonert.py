@@ -129,17 +129,17 @@ print('\n')
 ##### 9)
 # Find pairs of actors who co-stared in 3 or more movies. 
 # The pairs of names must be unique.
-pairs = c.execute("""select act_a, act_b, cnt / 2 as cnt2 from (	
-    select *, count(*) as cnt from (
-    		select case when act_a < act_b then act_a else act_b end as act_a,
-    				case when act_a < act_b then act_b else act_a end as act_b from (
-    					select imdb_id, actor as act_a from movie_actor) a
-    			left join (select imdb_id, actor as act_b from movie_actor) b
-    			on a.imdb_id = b.imdb_id
-    			where act_a <> act_b) tb1
-    	group by 1, 2) tb2
-where cnt2 >= 3
-order by cnt2 desc, act_a, act_b""")
+pairs = c.execute("""select distinct case when act_a < act_b then act_a else act_b end as act_a,
+	case when act_a < act_b then act_b else act_a end as act_b,
+	cnt from (
+		select act_a, act_b, count(*) as cnt from (
+			select imdb_id, actor as act_a from movie_actor) a
+			left join (select imdb_id, actor as act_b from movie_actor) b
+			on a.imdb_id = b.imdb_id
+			where act_a <> act_b
+			group by 1,2) tb1
+where cnt >= 3
+order by cnt desc, act_a, act_b""")
 
 print("Pairs of actors who co-stared in 3 or more movies:")
 print("Actor A, Actor B, Co-stared Movies")
