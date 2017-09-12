@@ -4,7 +4,8 @@ Created on Wed Sep  6 11:04:28 2017
 
 HW 1 Part 2
 
-@author: spoonertaylor
+@author: Taylor Spooner
+unique name: spoonert
 """
 import sys
 import os
@@ -31,7 +32,7 @@ with open(r'.\movie_actors_data.txt', 'r') as file:
     data = file.readlines()
 # Load as JSON
 data_json = [json.loads(x) for x in data]
-# Create SQLite database and tables
+# Connect to SQL database that was already created.
 conn = sqlite3.connect('.\hw1database.db')
 c = conn.cursor()
 # Query data table
@@ -41,9 +42,11 @@ acts = c.execute("""select actor, count(*) as cnt from movie_genre g
                      group by a.actor
                      order by cnt DESC, actor
                      limit %d;""" % (genre_low, k))
-
+# Print results
 print("Top %d actors who played in most %s movies:" % (k, genre))
 print("Actor, %s Movies Played in" % genre)
 for i, tup in enumerate(acts.fetchall()):
     print(tup[0] + ", " + str(tup[1]))
-print('\n') 
+print('\n')
+
+conn.close()

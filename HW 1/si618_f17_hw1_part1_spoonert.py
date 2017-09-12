@@ -2,7 +2,8 @@
 """
 Created on Tue Sep  5 19:23:57 2017
 HW 1 Part 1
-@author: spoonertaylor
+@author: Taylor Spooner
+unique name: spoonert
 """
 import json
 import sqlite3
@@ -129,6 +130,9 @@ print('\n')
 ##### 9)
 # Find pairs of actors who co-stared in 3 or more movies. 
 # The pairs of names must be unique.
+# Join the movie_actor table to itself to create pairs.
+# Use the < operator to compare the names and alphabitize
+# Only take distinct pairs.
 pairs = c.execute("""select distinct case when act_a < act_b then act_a else act_b end as act_a,
 	case when act_a < act_b then act_b else act_a end as act_b,
 	cnt from (
