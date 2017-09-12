@@ -12,7 +12,7 @@ from mrjob.job import MRJob
 from mrjob.step import MRStep
 import re
 
-WORD_RE = re.compile("[a-zA-Z']+")
+WORD_RE = re.compile("[a-zA-Z0-9']+")
 
 class MRMostUsedWord(MRJob):
     # Write a mapper that seperates each word (lowercased) in a line

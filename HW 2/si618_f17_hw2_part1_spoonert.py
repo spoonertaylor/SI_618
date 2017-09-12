@@ -11,7 +11,7 @@ unique name: spoonert
 from mrjob.job import MRJob
 import re
 
-WORD_RE = re.compile("[a-zA-Z']+")
+WORD_RE = re.compile("[a-zA-Z0-9']+")
 
 class MRMostUsedWord(MRJob):
     def mapper(self, _, line):
