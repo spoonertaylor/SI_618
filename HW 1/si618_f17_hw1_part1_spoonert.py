@@ -7,9 +7,9 @@ unique name: spoonert
 """
 import json
 import sqlite3
-import os
 
-os.chdir(r'C:\Users\Taylor\Documents\UMich\SI_618\HW 1')
+# The data must be downloaded and put into the same directory as the script.
+ 
 # Read in the file
 with open(r'.\movie_actors_data.txt', 'r') as file:
     data = file.readlines()
@@ -148,7 +148,6 @@ order by cnt desc, act_a, act_b""")
 print("Pairs of actors who co-stared in 3 or more movies:")
 print("Actor A, Actor B, Co-stared Movies")
 for i, tup in enumerate(pairs.fetchall()):
-    print(tup[0] + ", " + tup[1] + ", " + str(tup[2]))
-print('\n')                  
+    print(tup[0] + ", " + tup[1] + ", " + str(tup[2]))               
 
 conn.close()
