@@ -4,3 +4,9 @@ My course work from SI 618: Data Manipulation and Analysis at the University of 
 The course was taught by Ceren Budak from the University of Michigan School of Information program. 
 
 All course work was provided by Dr. Budak and the University of Michigan. Course work was in the form of labs, homework assignments and an end of the semester project. I do not own this material and it should not be used to pass to future semesters of this course.
+
+Topics of this course were:
+
+* Fetching and parsing web content
+* Using SQLite to query SQL databases
+* Big data processing using Hadoop, MapReduce and Spark
