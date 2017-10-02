@@ -13,7 +13,6 @@ from pyspark import SparkContext
 sc = SparkContext(appName="HW4")
 
 from pyspark.sql import SQLContext
-from pyspark.sql.functions import *
 sqlContext = SQLContext(sc)
 
 # Load data and register as a table
@@ -41,13 +40,21 @@ order by cities""")
 q1.collect()
 q1.rdd.map(lambda i: ','.join(str(j) for j in i))
 #q1.write.csv('si618_f17_hw4_output_allreview_spoonert.csv', header=True)
-
+city_last = 0
 with open('si618_f17_hw4_output_allreview_spoonert.csv', 'wb') as csvfile:
     all_rev = csv.writer(csvfile, delimiter=',',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
     all_rev.writerow(["cities", "yelp users"])
     for row in q1.collect():
-        all_rev.writerow(row)
+        city = int(row[0])
+        if city == city_last+1:
+            all_rev.writerow(row)
+        else:
+            city_diff = city - city_last
+            for i in range(1,city_diff):
+                all_rev.writerow([city_last+i, 0])
+            all_rev.writerow(row)
+        city_last = city
 
 ## Question 2
 ## Do the same analysis but filter into good and bad reviews
@@ -65,12 +72,21 @@ order by cities""")
 
 good.collect()
 good.rdd.map(lambda i: ','.join(str(j) for j in i))
+city_last = 0
 with open('si618_f17_hw4_output_goodreview_spoonert.csv', 'wb') as csvfile:
     good_rev = csv.writer(csvfile, delimiter=',',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
     good_rev.writerow(["cities", "yelp users"])
     for row in good.collect():
-        good_rev.writerow(row)    
+        city = int(row[0])
+        if city == city_last+1:
+            good_rev.writerow(row)
+        else:
+            city_diff = city - city_last
+            for i in range(1,city_diff):
+                good_rev.writerow([city_last+i, 0])
+            good_rev.writerow(row)
+        city_last = city   
     
    
 # Bad reviews, stars for a review < 3
@@ -87,9 +103,18 @@ order by cities""")
     
 bad.collect()
 bad.rdd.map(lambda i: ','.join(str(j) for j in i))
+city_last = 0
 with open('si618_f17_hw4_output_badreview_spoonert.csv', 'wb') as csvfile:
     bad_rev = csv.writer(csvfile, delimiter=',',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
     bad_rev.writerow(["cities", "yelp users"])
     for row in bad.collect():
-        bad_rev.writerow(row) 
+        city = int(row[0])
+        if city == city_last+1:
+            bad_rev.writerow(row)
+        else:
+            city_diff = city - city_last
+            for i in range(1,city_diff):
+                bad_rev.writerow([city_last+i, 0])
+            bad_rev.writerow(row)
+        city_last = city   
