@@ -7,6 +7,7 @@ All course work was provided by Dr. Budak and the University of Michigan. Course
 
 Topics of this course were:
 
-* Fetching and parsing web content
+* Fetching and parsing web content and API's
 * Using SQLite to query SQL databases
 * Big data processing using Hadoop, MapReduce and Spark
+* Crowdsourcing using Amazon MTurk
