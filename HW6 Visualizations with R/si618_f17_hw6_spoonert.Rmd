@@ -1,0 +1,43 @@
+---
+output: pdf_document
+---
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+```
+#SI 618 FAll 2017 Homework 6
+
+##Step 1: Load data
+First the provided TSV data file is loaded into R using the **read.table()** function. Display the first 15 rows of the data frame:
+
+```{r, echo=FALSE}
+dat = read.table("countrydata_withregion.tsv", sep = '\t', quote="", header=TRUE)
+head(dat,15)
+```
+
+##Step 2: Scatter plot of log transformed data
+Logarithms (base 2) of the area and the population of each country are computed and used to produce the folowing scatter plot using the **qplot()** function. Use **\{r echo=FALSE, fig.width=7\}** for all the plots.
+```{r, echo=FALSE, fig.width=7}
+dat$log_area = log2(dat$area)
+dat$log_pop = log2(dat$population)
+ggplot(aes(x=log_area,y=log_pop), data=dat) + geom_point() + 
+  xlab("Log base 2 of the area") + ylab("Log base 2 of the population")
+```
+
+##Step 3: Data aggregation by region
+The areas and populations of all countries in a region are summed up using the **aggregate()** function, respectively. Then the following two pie charts are created using the **pie()** function.
+
+```{r,echo=FALSE, fig.width=7}
+areas = aggregate(dat$area, by=list(region = dat$region),FUN=sum)
+pops = aggregate(as.numeric(dat$population), by=list(region = dat$region), FUN=sum)
+pie(areas$x, labels=areas$region,main="Area of Regions")
+pie(pops$x, labels=pops$region,main="Population of Regions")
+```
+
+##Step 4: Visualization of Population per sq km of Region
+A new data frame is created to contain the population per sq km of each region using the **data.frame()** function. The data frame is then sorted by population per sq km in decreasing order with the help of the **reorder()** function. Finally, the following bar plot is created using the **qplot()** function with **geom="bar"**.In order to rotate the x-axis labels, add **+ theme(axis.text.x = element_text(angle = 60, hjust =1))** at the end of the **qplot()** function call.
+
+```{r,echo=FALSE,fig.width=7}
+pop_pk = data.frame(regions = areas$region, ppk=pops$x/areas$x)
+
+ggplot(aes(reorder(regions, -ppk), ppk), data=pop_pk) + geom_bar(stat="identity") + theme(axis.text.x = element_text(angle = 60, hjust =1)) + xlab("Region") + ylab("Population per sq km in Regions")
+```
