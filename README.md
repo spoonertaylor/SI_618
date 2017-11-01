@@ -11,3 +11,4 @@ Topics of this course were:
 * Using SQLite to query SQL databases
 * Big data processing using Hadoop, MapReduce and Spark
 * Crowdsourcing using Amazon MTurk
+* Data Exploration and manipulation in R using data.table and ggplot
