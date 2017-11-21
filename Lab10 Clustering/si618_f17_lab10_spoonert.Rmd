@@ -1,0 +1,84 @@
+---
+title: "SI 618 Fall 2017 Lab 10"
+author: "Taylor Spooner"
+output: html_document
+---
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(data.table)
+```
+
+##Part 1. Data Preperation
+To prepare for clustering, you need to extract the relevant columns: HP, Attack, Defense, Sp..Atk, Sp..Def, and Speed. Next, scale the data: Do this by calling the appropriate R scaling function: use settings so that each variable (column) is centered by subtracting the variable (column) mean, and scaled by dividing by the variable's standard deviation.
+
+Show the first 5 rows of the scaled data frame:
+```{r, echo=FALSE}
+dat = fread("Pokemon.csv")
+dat = dat[, .(HP, Attack, Defense, `Sp. Atk`, `Sp. Def`, Speed),]
+dat = as.data.table(scale(dat))
+head(dat,5)
+```
+
+##Part 2. Identify the right number of clusters
+The first challenge with the Pokemon data is that there is no pre-determined number of clusters. You will assess the appropriate number of clusters by inspecting how the within group sum of squares varies with respect to the number of clusters. Keep in mind that in real data the elbow in the scree plot might be less of a sharp elbow than in synthetic data. Use the simple plot() function to visualize the within group sum of squares for when k=1:15.
+
+```{r, echo=FALSE, fig.align='center', fig.height=4}
+wss <- (nrow(dat)-1)*sum(apply(dat,2,var))
+wss[2:15] = sapply(2:15, function(i) sum(kmeans(dat, centers=i)$withinss))
+plot(wss, type = "b", ylab="Within groups sum of squares", xlab="Number of Clusters")
+```
+
+##Part 3. Plot the clusters.
+
+a. Plot the outcomes of the clustering on two dimensions of the data when k (number of clusters)=3. Here, you should plot what cluster the data points with given Defense and Speed characteristics are assigned to (x-axis: Defense, y-axis: Speed, color:cluster assigned).
+
+```{r,echo=FALSE, fig.height=7, fig.width = 7}
+clust_3 = kmeans(dat, centers=3)
+clust_3df = data.table(Defense = dat$Defense, Speed = dat$Speed, Attack = dat$Attack, k = clust_3$cluster)
+clust_3df[k==1, cl := 4,]
+clust_3df[k==3, cl := 1,]
+clust_3df[cl == 4, k := 3,]
+clust_3df[cl == 1, k := 1,]
+
+plot(x=clust_3df$Defense, y=clust_3df$Speed, col = clust_3df$k,
+     main="k-means clustering of Pokemon with 3 clusters",
+     xlab="Defense",
+     ylab="Speed")
+```
+
+\newpage
+Next plot the relationship between Attack, Defense and the clusters assigned in a similar fashion. Your plot should look like this:
+
+```{r,echo=FALSE,fig.height=7, fig.width = 7}
+plot(y=clust_3df$Attack, x=clust_3df$Defense, col = clust_3df$k,
+     main="k-means clustering of Pokemon with 3 clusters",
+     ylab="Attack",
+     xlab="Defense")
+```
+
+\newpage
+b. Repeat the same analysis for k=2.
+
+```{r, echo=FALSE,fig.height=7, fig.width = 7}
+clust_2 = kmeans(dat, centers=2)
+clust_2df = data.table(Defense = dat$Defense, Speed = dat$Speed, Attack = dat$Attack, k = clust_2$cluster)
+clust_2df[k==1, cl := 4,]
+clust_2df[k==2, cl := 1,]
+clust_2df[cl == 4, k := 2,]
+clust_2df[cl == 1, k := 1,]
+
+plot(x=clust_2df$Defense, y=clust_2df$Speed, col = clust_2df$k,
+     main="k-means clustering of Pokemon with 2 clusters",
+     xlab="Defense",
+     ylab="Speed")
+```
+
+\newpage
+
+```{r, echo=FALSE,fig.height=7, fig.width = 7}
+plot(y=clust_2df$Attack, x=clust_2df$Defense, col = clust_2df$k,
+     main="k-means clustering of Pokemon with 2 clusters",
+     ylab="Attack",
+     xlab="Defense")
+```
+
