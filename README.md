@@ -12,3 +12,4 @@ Topics of this course were:
 * Big data processing using Hadoop, MapReduce and Spark
 * Crowdsourcing using Amazon MTurk
 * Data Exploration and manipulation in R using data.table and ggplot
+* Clustering data analysis in R
