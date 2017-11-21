@@ -1,0 +1,149 @@
+---
+title: "SI 618 Fall 2017, Homework 10"
+author: "Taylor Spooner"
+output: html_document
+---
+
+```{r,,echo=FALSE, message=FALSE,warning=FALSE}
+library(cluster)
+library(data.table)
+library(gplots)
+```
+
+#### Part 1. [20 points] Data preparation
+
+To prepare for clustering, you need to scale the data: Do this for the **cars** dataset by calling the appropriate R scaling function: use settings so that each variable (column) is centered by subtracting the variable (column) mean, and scaled by dividing by the variable's standard deviation. Use the car names for the data frame row names.
+
+(a) Show the first 5 rows of the scaled data frame, and 
+
+```{r, echo=FALSE, fig.width=14}
+dat = read.csv("cars.tsv", sep = '\t')
+dat2 = dat
+dat$Country = NULL
+rownames(dat) = dat$Car
+dat$Car = NULL
+dat = as.data.frame(scale(dat))
+head(dat,5)
+```
+
+
+(b) Compute a distance object based on the Euclidean distance between the rows of the scaled dataset. Convert the distance object to a matrix and show the 5x5 upper corner of the matrix (i.e. containing the first 5 rows and columns).
+
+```{r, echo=FALSE, fig.width=14}
+dat_dist = dist(dat)
+dist_m = as.matrix(dat_dist)
+dist_m[1:5,1:5]
+```
+
+#### Part 2. [20 points] Hierarchical clustering. 
+Using the distance object you computed from 1(b), compute and plot a hierarchical cluster analysis using average-linkage clustering. With this clustering, cut the tree into 3 clusters and plot the dendogram with red borders around the clusters (Hint: use rect.hclust() function).
+
+```{r, echo=FALSE, fig.width=12}
+clust_avg = hclust(dat_dist, method='average')
+plot(clust_avg, main="Hierarchical clustering analysis using average linkage")
+groups.3 = cutree(clust_avg, k=3)
+rect.hclust(clust_avg, k=3, border="red")
+```
+
+#### Part 3. [10 points] Using clustering results
+
+The output from the tree-cutting function in 2(b) above should produce a mapping of car type to cluster number (from 1 to 3), like this:
+```{r, echo=TRUE}
+groups.3
+```
+
+With this group mapping, produce three tables:
+
+a) a 1-dimensional contingency table showing the number of cars in each cluster;
+
+b) a 2-dimensional contingency table of the number of cars in each cluster from each country of manufacture; and
+
+c) a table showing the median value per cluster of each variable.
+
+The desired output is shown here:
+```{r, echo=FALSE}
+# Table a
+table(groups.3)
+
+# Table b
+rownames(dat2) = dat2$Car
+dat2$groups.3 = groups.3
+table(dat2$groups.3, dat2$Country)
+
+# Table c
+aggregate(dat2[, 3:8], list(dat2$groups.3), median)
+```
+
+
+#### Part 4. Heatmaps [10 points]
+
+Use the heatmap.2 function to produce a heatmap of the cars dataset with these settings:
+
+- average-link clustering
+
+- column-based scaling
+
+- row-based dendrogram
+
+- no density info
+
+You do not need to reproduce the exact width and height shown here, but for reference the example used these settings:
+
+margins = c(5, 8), cexRow=0.7,cexCol=0.7.
+
+```{r, echo=FALSE}
+heatmap.2(as.matrix(dat), scale="column", dendrogram = "row", 
+          margins = c(5, 8), cexRow=0.7,cexCol=0.7,
+          density.info = "none", trace= "none",
+          col=colorRampPalette(c("red","white","blue"))(256))
+```
+
+#### Part 5. [20 points] k-medoids clustering.
+
+Apply the `partitioned around medoids' R function to the distances you computed in 1(b) to find three clusters of cars.  
+
+```{r,echo=FALSE}
+pam_clust = pam(dat_dist,k=3)
+```
+
+(a) Compare this to the 3 clusters you found with heirarchical clustering in Part 2, by showing the 2-dimensional contingency table for the hierarchical group variable (shown in Part 3) vs. the clustering variable that is output by the 'partitioned around medoids' function (Part 4).  How well do the two clusterings agree?  
+
+> Looking at the table below we see that the two clustering techniques match up perfectly with each other. The rows represent the clusters from the heirarchical clustering while the columns represent the clustering from pam.
+
+```{r,echo=FALSE}
+ftable(groups.3,pam_clust$clustering,
+       dnn = c("HClust", "PAM"))
+```
+
+(b) Give the medoid car found for each cluster. 
+
+> The mediod car for each cluster is:
+
+```{r,echo=FALSE}
+mcars = pam_clust$medoids
+for(i in 1:3) {
+  m_car = mcars[i]
+  print(paste("Medoid car for group", i, "is:", m_car))
+}
+```
+
+(c) Show the k-medoids clusters from 5(a) using the appropriate bivariate cluster plotting function, as shown.
+
+```{r, echo=FALSE, fig.height = 10}
+clusplot(pam_clust,
+         main="k-mediod clustering of cars into 3 groups",
+         labels=2)
+```
+
+#### Part 6. [15 points] Assessing cluster quality.
+
+Create a silhouette plot based on the k-medoid clusters found in Part 5 and distance matrix from Part 1. 
+What can you conclude from the plot about the quality of these three clusters? 
+
+> Below we plot the silhouette plot for the three car clusters. The silhouette width for the first two plots shows little variance within these clusters. The third cluster shows more variance within it and not as similiar of points within the cluster. We also notice that within cluster 3 there is the "AMC C" car that has a negative value. This shows less quality in the third cluster.
+
+```{r, echo=FALSE, fig.height = 10}
+plot(silhouette(pam_clust),
+     main="Silhouette plot of three car clusters")
+```
+
