@@ -1,7 +1,7 @@
 ---
 title: "SI 618 Fall 2017 Lab 10"
 author: "Taylor Spooner"
-output: html_document
+output: rmarkdown::github_document
 ---
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE}
