@@ -13,3 +13,7 @@ Topics of this course were:
 * Crowdsourcing using Amazon MTurk
 * Data Exploration and manipulation in R using data.table and ggplot
 * Clustering data analysis in R
+* Principal Component Analysis and Factor Analysis in R
+* Outlier Detection
+
+Data Camp was used heavily for many labs assignments. Through the course of the semester, I completed: Introduction and Intermidiate R, Introduction and Data Visualization with ggplot, Introduction and Intermidiate to data.table and Time Series Analysis.
