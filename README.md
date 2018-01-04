@@ -1,4 +1,4 @@
-# SI 618 Course Wrok
+# SI 618 Course Work
 My course work from SI 618: Data Manipulation and Analysis at the University of Michigan from Fall 2017.
 
 The course was taught by Ceren Budak from the University of Michigan School of Information program. 
